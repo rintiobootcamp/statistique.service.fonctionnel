@@ -92,7 +92,7 @@ public class statistiqueTest {
      *
      * @throws Exception
      */
-    @Test
+    @Test(priority = 0, groups = {"Statistiques"})
     public void statsByEntityTypeAndID() throws Exception {
         String statsURI = BASE_URI + STAT_PATH +"/"+entityType+"/"+entityId;
         Response response = given()
@@ -110,4 +110,31 @@ public class statistiqueTest {
 
     }
 
+	
+	 /**
+     * Get the statistics of the given entity type
+     * <b>
+     * the comments must exist in the database
+     * </b>
+     * Note that this method will be the third to execute If every done , it
+     * will return a 200 httpStatus code
+     *
+     * @throws Exception
+     */
+	@Test(priority = 1, groups = {"Statistiques"})
+    public void statsByEntityTypeAndID() throws Exception {
+        String statsURI = BASE_URI + STAT_PATH +"/"+entityType;
+        Response response = given()
+                .queryParam( "startDate",startDate)
+                .queryParam( "endDate",endDate )
+                .log().all()
+                .contentType("application/json")
+                .expect()
+                .when()
+                .get(statsURI);
+        logger.debug(response.getBody().prettyPrint());
+        Assert.assertEquals(response.statusCode(), 200);
+    }
+
 }
+
