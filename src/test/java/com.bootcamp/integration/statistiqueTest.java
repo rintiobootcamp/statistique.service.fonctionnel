@@ -1,11 +1,11 @@
 package com.bootcamp.integration;
 
-import com.bootcamp.controllers.StatistiqueController;
 import com.jayway.restassured.response.Response;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import com.bootcamp.controllers.StatistiqueController;
 
 
 import static com.jayway.restassured.RestAssured.given;
@@ -121,8 +121,8 @@ public class statistiqueTest {
      *
      * @throws Exception
      */
-	@Test(priority = 1, groups = {"Statistiques"})
-    public void statsByEntityTypeAndID() throws Exception {
+    @Test(priority = 1, groups = {"Statistiques"})
+    public void statsByEntityType() throws Exception {
         String statsURI = BASE_URI + STAT_PATH +"/"+entityType;
         Response response = given()
                 .queryParam( "startDate",startDate)
