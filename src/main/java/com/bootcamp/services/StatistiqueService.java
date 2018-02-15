@@ -133,9 +133,16 @@ public class StatistiqueService {
         List<Stat> stats = new ArrayList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
-        long x = formatter.parse(startDate).getTime();
-        long y = formatter.parse(endDate).getTime();
-        long z = pas * 24 * 3600;
+        long x, y, z;
+        if (startDate.equals("0") && endDate.equals("0")) {
+            x = formatter.parse("01-01-2018").getTime();
+            y = System.currentTimeMillis();
+            z = pas * 24 * 3600;
+        } else {
+            x = formatter.parse(startDate).getTime();
+            y = formatter.parse(endDate).getTime();
+            z = pas * 24 * 3600;
+        }
 
         for (long i = x; i < y; i = i + z) {
             String dateDebut = formatter.format(i);
@@ -193,9 +200,16 @@ public class StatistiqueService {
     public List<StatGlobal> getStatistiqueAllByPas(String entity, String startDate, String endDate, int pas) throws IOException, ParseException {
         List<StatGlobal> stats = new ArrayList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        long x = formatter.parse(startDate).getTime();
-        long y = formatter.parse(endDate).getTime();
-        long z = pas * 24 * 3600;
+        long x, y, z;
+        if (startDate.equals("0") && endDate.equals("0")) {
+            x = formatter.parse("01-01-2018").getTime();
+            y = System.currentTimeMillis();
+            z = pas * 24 * 3600;
+        } else {
+            x = formatter.parse(startDate).getTime();
+            y = formatter.parse(endDate).getTime();
+            z = pas * 24 * 3600;
+        }
 
         for (long i = x; i < y; i = i + z) {
             String dateDebut = formatter.format(i);
