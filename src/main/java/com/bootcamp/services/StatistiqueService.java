@@ -1,6 +1,5 @@
 package com.bootcamp.services;
 
-
 import com.bootcamp.client.CommentaireClient;
 import com.bootcamp.client.DebatClient;
 import com.bootcamp.client.LikeClient;
@@ -14,13 +13,16 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import java.util.List;
 
 /**
  * Created by Bignon reviewed by Moh.
  */
-
 @Component
 public class StatistiqueService {
 
@@ -28,17 +30,14 @@ public class StatistiqueService {
     CommentaireClient commentaireClient;
     LikeClient likeClient;
 
-
     @PostConstruct
 
     public void init() {
-
 
         debatClient = new DebatClient();
         commentaireClient = new CommentaireClient();
         likeClient = new LikeClient();
     }
-
 
     public Stat getStatistique(String entity, int entityId, String startDate, String endDate) throws IOException {
 
@@ -63,27 +62,30 @@ public class StatistiqueService {
         df.setMinimumFractionDigits(2);
 
         for (Debat debat : debats) {
-            if (debat.getEntityId() == entityId)
+            if (debat.getEntityId() == entityId) {
                 nbreDebat++;
+            }
         }
 
         for (Commentaire commentaire : commentaires) {
 
-            if (commentaire.getEntityId() == entityId)
-
+            if (commentaire.getEntityId() == entityId) {
                 nbreComment++;
+            }
 
         }
 
         for (LikeTable like : likes) {
             if (like.isLikeType()) {
                 nbreTotalLike++;
-                if (like.getEntityId() == entityId)
+                if (like.getEntityId() == entityId) {
                     nbreLike++;
+                }
             } else if (!like.isLikeType()) {
                 nbreTotalUnLike++;
-                if (like.getEntityId() == entityId)
+                if (like.getEntityId() == entityId) {
                     nbreUnLike++;
+                }
             }
         }
         //Double.parseDouble(df.format(
@@ -105,7 +107,6 @@ public class StatistiqueService {
         } else {
             stat.setTauxDebat((nbreDebat / nbreTotalDebat));
         }
-
 
         stat.setNbreLike(nbreLike);
         if (nbreTotalLike == 0) {
@@ -129,6 +130,28 @@ public class StatistiqueService {
         return stat;
     }
 
+    public List<Stat> getStatistiqueByPas(String entity, int entityId, String startDate, String endDate, int pas) throws IOException, ParseException {
+        List<Stat> stats = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        for (int i = 0; i < 10; i = i + pas) {
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(formatter.parse(startDate));
+            calendar1.add(Calendar.DATE, pas);
+            String dateDebut = formatter.format(calendar1.getTime());
+
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(formatter.parse(endDate));
+            calendar2.add(Calendar.DATE, pas);
+            String dateFin = formatter.format(calendar2.getTime());
+
+            Stat stat = this.getStatistique(entity, entityId, dateDebut, dateFin);
+            stats.add(stat);
+        }
+
+        return stats;
+
+    }
 
     public StatGlobal getStatistiqueAll(String entity, String startDate, String endDate) throws IOException {
 
@@ -147,7 +170,6 @@ public class StatistiqueService {
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(4); //arrondi à 4 chiffres apres la virgules
         df.setMinimumFractionDigits(2);
-
 
         for (LikeTable like : likes) {
             if (like.isLikeType()) {
@@ -170,6 +192,29 @@ public class StatistiqueService {
         stat.setNbreTotalUnLike(nbreTotalUnLike);
 
         return stat;
+    }
+
+    public List<StatGlobal> getStatistiqueAllByPas(String entity, String startDate, String endDate, int pas) throws IOException, ParseException {
+        List<StatGlobal> stats = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        for (int i = 0; i < 10; i = i + pas) {
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(formatter.parse(startDate));
+            calendar1.add(Calendar.DATE, pas);
+            String dateDebut = formatter.format(calendar1.getTime());
+
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(formatter.parse(endDate));
+            calendar2.add(Calendar.DATE, pas);
+            String dateFin = formatter.format(calendar2.getTime());
+
+            StatGlobal stat = this.getStatistiqueAll(entity, dateDebut, dateFin);
+            stats.add(stat);
+        }
+
+        return stats;
+
     }
 
 }
