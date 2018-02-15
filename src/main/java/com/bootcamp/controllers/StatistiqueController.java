@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
 
 
 
@@ -44,22 +46,24 @@ public class StatistiqueController {
      * @param entityId
      * @param startDate
      * @param endDate
+     * @param pas
      * @return
      * @throws IOException 
+     * @throws java.text.ParseException 
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{entityType}/{entityId}")
     @ApiOperation(value=" Get all statistics about an entity",notes="Get all statistics about an entity")
-    public ResponseEntity<Stat> getStatForEntity(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) throws IOException{
-        Stat stat= statistiqueService.getStatistique(entityType,entityId,startDate,endDate);
-        return new ResponseEntity<>(stat,HttpStatus.OK);
+    public ResponseEntity<List<Stat>> getStatForEntity(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("pas") int pas) throws IOException, ParseException{
+        List<Stat> stats= statistiqueService.getStatistiqueByPas(entityType,entityId,startDate,endDate, pas);
+        return new ResponseEntity<>(stats,HttpStatus.OK);
 
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{entityType}")
     @ApiOperation(value=" Get all statistics about an entityType",notes="Get all statistics about an entityType")
-    public ResponseEntity<StatGlobal> getAllStatByEntity(@PathVariable("entityType") String entityType,@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) throws IOException{
-        StatGlobal stat = statistiqueService.getStatistiqueAll(entityType,startDate,endDate);
-        return new ResponseEntity<>(stat,HttpStatus.OK);
+    public ResponseEntity<List<StatGlobal>> getAllStatByEntity(@PathVariable("entityType") String entityType,@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("pas") int pas) throws IOException, ParseException{
+        List<StatGlobal> stats = statistiqueService.getStatistiqueAllByPas(entityType,startDate,endDate, pas);
+        return new ResponseEntity<>(stats,HttpStatus.OK);
 
     }
 
