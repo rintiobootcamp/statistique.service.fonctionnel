@@ -40,7 +40,7 @@ public class StatistiqueService {
     }
 
 
-    public Stat getStatistique(String entity, int entityId, long startDate, long endDate) throws IOException {
+    public Stat getStatistique(String entity, int entityId, String startDate, String endDate) throws IOException {
 
         List<Commentaire> commentaires = commentaireClient.getAllCommentByAllEntity(entity, startDate, endDate);
         List<LikeTable> likes = likeClient.getAllLikeOrUnlikeByEntity(entity, startDate, endDate);
@@ -130,7 +130,7 @@ public class StatistiqueService {
     }
 
 
-    public StatGlobal getStatistiqueAll(String entity, long startDate, long endDate) throws IOException {
+    public StatGlobal getStatistiqueAll(String entity, String startDate, String endDate) throws IOException {
 
         List<Commentaire> commentaires = commentaireClient.getAllCommentByAllEntity(entity, startDate, endDate);
         List<LikeTable> likes = likeClient.getAllLikeOrUnlikeByEntity(entity, startDate, endDate);

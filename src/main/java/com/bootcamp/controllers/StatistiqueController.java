@@ -49,7 +49,7 @@ public class StatistiqueController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{entityType}/{entityId}")
     @ApiOperation(value=" Get all statistics about an entity",notes="Get all statistics about an entity")
-    public ResponseEntity<Stat> getStatForEntity(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId, @RequestParam("startDate") long startDate, @RequestParam("endDate") long endDate) throws IOException{
+    public ResponseEntity<Stat> getStatForEntity(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) throws IOException{
         Stat stat= statistiqueService.getStatistique(entityType,entityId,startDate,endDate);
         return new ResponseEntity<>(stat,HttpStatus.OK);
 
@@ -57,7 +57,7 @@ public class StatistiqueController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{entityType}")
     @ApiOperation(value=" Get all statistics about an entityType",notes="Get all statistics about an entityType")
-    public ResponseEntity<StatGlobal> getAllStatByEntity(@PathVariable("entityType") String entityType,@RequestParam("startDate") long startDate, @RequestParam("endDate") long endDate) throws IOException{
+    public ResponseEntity<StatGlobal> getAllStatByEntity(@PathVariable("entityType") String entityType,@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) throws IOException{
         StatGlobal stat = statistiqueService.getStatistiqueAll(entityType,startDate,endDate);
         return new ResponseEntity<>(stat,HttpStatus.OK);
 
