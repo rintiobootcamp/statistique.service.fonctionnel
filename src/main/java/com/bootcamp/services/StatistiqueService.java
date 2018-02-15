@@ -201,12 +201,12 @@ public class StatistiqueService {
         for (int i = 0; i < 10; i = i + pas) {
             Calendar calendar1 = Calendar.getInstance();
             calendar1.setTime(formatter.parse(startDate));
-            calendar1.add(Calendar.DATE, pas);
+            calendar1.add(Calendar.DATE, i);
             String dateDebut = formatter.format(calendar1.getTime());
 
             Calendar calendar2 = Calendar.getInstance();
             calendar2.setTime(formatter.parse(endDate));
-            calendar2.add(Calendar.DATE, pas);
+            calendar2.add(Calendar.DATE, i + pas);
             String dateFin = formatter.format(calendar2.getTime());
 
             StatGlobal stat = this.getStatistiqueAll(entity, dateDebut, dateFin);
