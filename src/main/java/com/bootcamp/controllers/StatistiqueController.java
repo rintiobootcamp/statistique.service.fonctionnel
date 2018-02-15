@@ -73,7 +73,7 @@ public class StatistiqueController {
      * @throws IOException
      * @throws java.text.ParseException
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/{entityType}/{entityId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/list/{entityType}/{entityId}")
     @ApiOperation(value = " Get all statistics about an entity", notes = "Get all statistics about an entity")
     public ResponseEntity<List<Stat>> getStatForEntityByPas(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("pas") int pas) throws IOException, ParseException {
         List<Stat> stats = statistiqueService.getStatistiqueByPas(entityType, entityId, startDate, endDate, pas);
@@ -81,7 +81,7 @@ public class StatistiqueController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{entityType}")
+    @RequestMapping(method = RequestMethod.GET, value = "/list/{entityType}")
     @ApiOperation(value = " Get all statistics about an entityType", notes = "Get all statistics about an entityType")
     public ResponseEntity<List<StatGlobal>> getAllStatByEntityByPas(@PathVariable("entityType") String entityType, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("pas") int pas) throws IOException, ParseException {
         List<StatGlobal> stats = statistiqueService.getStatistiqueAllByPas(entityType, startDate, endDate, pas);
