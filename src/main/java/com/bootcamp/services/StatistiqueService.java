@@ -1,6 +1,5 @@
 package com.bootcamp.services;
 
-
 import com.bootcamp.client.CommentaireClient;
 import com.bootcamp.client.DebatClient;
 import com.bootcamp.client.LikeClient;
@@ -14,13 +13,15 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import java.util.List;
 
 /**
  * Created by Bignon reviewed by Moh.
  */
-
 @Component
 public class StatistiqueService {
 
@@ -28,19 +29,16 @@ public class StatistiqueService {
     CommentaireClient commentaireClient;
     LikeClient likeClient;
 
-
     @PostConstruct
 
     public void init() {
-
 
         debatClient = new DebatClient();
         commentaireClient = new CommentaireClient();
         likeClient = new LikeClient();
     }
 
-
-    public Stat getStatistique(String entity, int entityId, long startDate, long endDate) throws IOException {
+    public Stat getStatistique(String entity, int entityId, String startDate, String endDate) throws IOException {
 
         List<Commentaire> commentaires = commentaireClient.getAllCommentByAllEntity(entity, startDate, endDate);
         List<LikeTable> likes = likeClient.getAllLikeOrUnlikeByEntity(entity, startDate, endDate);
@@ -63,27 +61,30 @@ public class StatistiqueService {
         df.setMinimumFractionDigits(2);
 
         for (Debat debat : debats) {
-            if (debat.getEntityId() == entityId)
+            if (debat.getEntityId() == entityId) {
                 nbreDebat++;
+            }
         }
 
         for (Commentaire commentaire : commentaires) {
 
-            if (commentaire.getEntityId() == entityId)
-
+            if (commentaire.getEntityId() == entityId) {
                 nbreComment++;
+            }
 
         }
 
         for (LikeTable like : likes) {
             if (like.isLikeType()) {
                 nbreTotalLike++;
-                if (like.getEntityId() == entityId)
+                if (like.getEntityId() == entityId) {
                     nbreLike++;
+                }
             } else if (!like.isLikeType()) {
                 nbreTotalUnLike++;
-                if (like.getEntityId() == entityId)
+                if (like.getEntityId() == entityId) {
                     nbreUnLike++;
+                }
             }
         }
         //Double.parseDouble(df.format(
@@ -105,7 +106,6 @@ public class StatistiqueService {
         } else {
             stat.setTauxDebat((nbreDebat / nbreTotalDebat));
         }
-
 
         stat.setNbreLike(nbreLike);
         if (nbreTotalLike == 0) {
@@ -129,8 +129,33 @@ public class StatistiqueService {
         return stat;
     }
 
+    public List<Stat> getStatistiqueByPas(String entity, int entityId, String startDate, String endDate, int pas) throws IOException, ParseException {
+        List<Stat> stats = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
-    public StatGlobal getStatistiqueAll(String entity, long startDate, long endDate) throws IOException {
+        if (startDate.equals("0") && endDate.equals("0")) {
+            Stat stat = this.getStatistique(entity, entityId, startDate, endDate);
+            stats.add(stat);
+        } else {
+            long x = formatter.parse(startDate).getTime();
+            long y = formatter.parse(endDate).getTime();
+            long z = pas * 86400000;
+
+            for (long i = x; i < y; i = i + z) {
+                String dateDebut = formatter.format(i);
+                String dateFin = formatter.format(i + z);
+
+                Stat stat = this.getStatistique(entity, entityId, dateDebut, dateFin);
+                stats.add(stat);
+            }
+
+        }
+
+        return stats;
+
+    }
+
+    public StatGlobal getStatistiqueAll(String entity, String startDate, String endDate) throws IOException {
 
         List<Commentaire> commentaires = commentaireClient.getAllCommentByAllEntity(entity, startDate, endDate);
         List<LikeTable> likes = likeClient.getAllLikeOrUnlikeByEntity(entity, startDate, endDate);
@@ -147,7 +172,6 @@ public class StatistiqueService {
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(4); //arrondi à 4 chiffres apres la virgules
         df.setMinimumFractionDigits(2);
-
 
         for (LikeTable like : likes) {
             if (like.isLikeType()) {
@@ -170,6 +194,30 @@ public class StatistiqueService {
         stat.setNbreTotalUnLike(nbreTotalUnLike);
 
         return stat;
+    }
+
+    public List<StatGlobal> getStatistiqueAllByPas(String entity, String startDate, String endDate, int pas) throws IOException, ParseException {
+        List<StatGlobal> stats = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        if (startDate.equals("0") && endDate.equals("0")) {
+            StatGlobal stat = this.getStatistiqueAll(entity, startDate, endDate);
+            stats.add(stat);
+        } else {
+            long x = formatter.parse(startDate).getTime();
+            long y = formatter.parse(endDate).getTime();
+            long z = pas * 86400000;
+            for (long i = x; i < y; i = i + z) {
+                String dateDebut = formatter.format(i);
+                String dateFin = formatter.format(i + z);
+
+                StatGlobal stat = this.getStatistiqueAll(entity, dateDebut, dateFin);
+                stats.add(stat);
+            }
+        }
+
+        return stats;
+
     }
 
 }
