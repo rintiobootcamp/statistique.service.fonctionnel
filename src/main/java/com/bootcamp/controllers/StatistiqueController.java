@@ -5,6 +5,7 @@ import com.bootcamp.services.Stat;
 
 import com.bootcamp.services.StatGlobal;
 import com.bootcamp.services.StatistiqueService;
+import helpers.Input;
 import helpers.Output;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -94,10 +95,10 @@ public class StatistiqueController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "censures/{entityType}/{entityId}")
+    @RequestMapping(method = RequestMethod.POST)
     @ApiOperation(value = " Get all statistics about censure of an entity", notes = "Get all statistics about censure of an entity")
-    public ResponseEntity<Output> getCensureStatForEntity(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId) throws IOException {
-        Output output = censureStatService.getCensures(entityType,entityId);
+    public ResponseEntity<Output> getCensureStatForEntity(@RequestBody Input  input) throws IOException {
+        Output output = censureStatService.getCensures(input.getEntity(),input.getId());
 
         return new ResponseEntity<>(output, HttpStatus.OK);
 
