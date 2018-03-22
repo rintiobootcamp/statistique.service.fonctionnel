@@ -1,9 +1,11 @@
 package com.bootcamp.controllers;
 
+import com.bootcamp.services.CensureStatService;
 import com.bootcamp.services.Stat;
 
 import com.bootcamp.services.StatGlobal;
 import com.bootcamp.services.StatistiqueService;
+import helpers.Output;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class StatistiqueController {
 
     @Autowired
     StatistiqueService statistiqueService;
+
+    @Autowired
+    CensureStatService censureStatService;
 
     /**
      * Methode pour obtenir les statisques globales sur un type d'entite en
@@ -86,6 +91,15 @@ public class StatistiqueController {
     public ResponseEntity<List<StatGlobal>> getAllStatByEntityByPas(@PathVariable("entityType") String entityType, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("pas") int pas) throws IOException, ParseException {
         List<StatGlobal> stats = statistiqueService.getStatistiqueAllByPas(entityType, startDate, endDate, pas);
         return new ResponseEntity<>(stats, HttpStatus.OK);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "censures/{entityType}/{entityId}")
+    @ApiOperation(value = " Get all statistics about censure of an entity", notes = "Get all statistics about censure of an entity")
+    public ResponseEntity<Output> getCensureStatForEntity(@PathVariable("entityType") String entityType, @PathVariable("entityId") int entityId) throws IOException {
+        Output output = censureStatService.getCensures(entityType,entityId);
+
+        return new ResponseEntity<>(output, HttpStatus.OK);
 
     }
 
