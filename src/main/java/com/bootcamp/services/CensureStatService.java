@@ -1,7 +1,6 @@
 package com.bootcamp.services;
 
 import com.bootcamp.client.CensureClient;
-import com.bootcamp.crud.CensureCRUD;
 import com.bootcamp.entities.Censure;
 import helpers.Message;
 import helpers.Output;

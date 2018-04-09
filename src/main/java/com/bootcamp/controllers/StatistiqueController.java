@@ -7,6 +7,7 @@ import com.bootcamp.services.StatGlobal;
 import com.bootcamp.services.StatistiqueService;
 import helpers.Input;
 import helpers.Output;
+import helpers.ReturnMostViewProjects;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,15 @@ public class StatistiqueController {
         return new ResponseEntity<>(stat, HttpStatus.OK);
 
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/projects/mostViewed")
+    @ApiOperation(value = " Get four projects most viewed", notes = "Get four projects most viewed")
+    public ResponseEntity<List<ReturnMostViewProjects>> getTheMostViewProjects() throws IOException {
+        List<ReturnMostViewProjects> retours = statistiqueService.constructReturnMostViewProjects();
+        return new ResponseEntity<>(retours, HttpStatus.OK);
+
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/{entityType}")
     @ApiOperation(value = " Get all statistics about an entityType", notes = "Get all statistics about an entityType")

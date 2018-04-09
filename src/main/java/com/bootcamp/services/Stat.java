@@ -1,5 +1,7 @@
 package com.bootcamp.services;
 
+import com.bootcamp.entities.Projet;
+
 public class Stat {
     private double nbreComment;
     private double nbreTotalComment;
@@ -13,6 +15,9 @@ public class Stat {
     private double tauxLike;
     private double nbreTotalUnLike;
     private double tauxUnLike;
+
+    Projet projet = new Projet();
+
 
     public double getNbreComment() {
         return nbreComment;
