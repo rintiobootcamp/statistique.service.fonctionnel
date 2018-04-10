@@ -294,7 +294,7 @@ public class StatistiqueService {
     public long nbrLikes(int id) throws IOException {
         LikeClient likeClient = new LikeClient();
         LikeWS likeWS =likeClient.getAllLikeOrUnlikeByEntity("PROJET",id);
-        return likeWS.getLike()+likeWS.getUnlike();
+        return likeWS.getLike();
 
     }
 
