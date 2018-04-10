@@ -243,9 +243,9 @@ public class StatistiqueService {
             mvp.setIdProjet(projets.get(i).getId());
             mvp.setNom(projets.get(i).getNom());
 
-            long likes = nbrComments(projets.get(i).getId());
+            long likes = nbrLikes(projets.get(i).getId());
             //System.out.println("nbr cmts "+likes);
-            long cmts = nbrLikes(projets.get(i).getId());
+            long cmts = nbrComments(projets.get(i).getId());
             //System.out.println("nbr likes "+cmts);
             double moy = (likes+cmts)/2;
             //System.out.println("moyene "+moy);
