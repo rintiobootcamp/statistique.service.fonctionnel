@@ -1,12 +1,18 @@
 package com.bootcamp.integration;
 
+import com.bootcamp.commons.utils.GsonUtils;
+import com.bootcamp.services.StatistiqueService;
 import com.jayway.restassured.response.Response;
+import helpers.ReturnMostViewProjects;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import com.bootcamp.controllers.StatistiqueController;
 
+
+import java.io.IOException;
+import java.util.List;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -134,6 +140,14 @@ public class statistiqueTest {
                 .get(statsURI);
         logger.debug(response.getBody().prettyPrint());
         Assert.assertEquals(response.statusCode(), 200);
+    }
+
+    @Test
+    public void mvpTest() throws IOException {
+        StatistiqueService statistiqueService = new StatistiqueService();
+        List<ReturnMostViewProjects> rv =statistiqueService.constructReturnMostViewProjects();
+        String data = GsonUtils.toJSONWithoutClassName(rv);
+        System.out.println("RESULTAT "+data);
     }
 
 }

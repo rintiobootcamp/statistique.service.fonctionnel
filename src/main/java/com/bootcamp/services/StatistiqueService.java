@@ -3,10 +3,15 @@ package com.bootcamp.services;
 import com.bootcamp.client.CommentaireClient;
 import com.bootcamp.client.DebatClient;
 import com.bootcamp.client.LikeClient;
+import com.bootcamp.client.ProjetClient;
+import com.bootcamp.commons.utils.GsonUtils;
+import com.bootcamp.commons.ws.usecases.pivotone.LikeWS;
 import com.bootcamp.entities.Commentaire;
 import com.bootcamp.entities.Debat;
 import com.bootcamp.entities.LikeTable;
 
+import com.bootcamp.entities.Projet;
+import helpers.ReturnMostViewProjects;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +22,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,11 +35,12 @@ public class StatistiqueService {
     DebatClient debatClient;
     CommentaireClient commentaireClient;
     LikeClient likeClient;
+    ProjetClient projetClient;
 
     @PostConstruct
 
     public void init() {
-
+        projetClient = new ProjetClient();
         debatClient = new DebatClient();
         commentaireClient = new CommentaireClient();
         likeClient = new LikeClient();
@@ -210,13 +218,82 @@ public class StatistiqueService {
             for (long i = x; i < y; i = i + z) {
                 String dateDebut = formatter.format(i);
                 String dateFin = formatter.format(i + z);
-
                 StatGlobal stat = this.getStatistiqueAll(entity, dateDebut, dateFin);
                 stats.add(stat);
             }
         }
 
         return stats;
+
+    }
+
+    /*                  By BIGNON                */
+
+    //This method get projects list, browse in it and construct a new list with number of comments and likes
+    public List<ReturnMostViewProjects> constructReturnMostViewProjects() throws IOException {
+        List<ReturnMostViewProjects> mvps = new ArrayList<>();
+
+        List<Projet>projets = getAllProjects();
+        //System.out.println("PROJECTS "+ GsonUtils.toJSONWithoutClassName(projets));
+
+        for (int i = 0; i < projets.size(); i++) {
+            //System.out.println("PROJET A l'indice "+GsonUtils.toJSONWithoutClassName(projets.get(i)));
+            ReturnMostViewProjects mvp = new ReturnMostViewProjects();
+            mvp.setIdProjet(projets.get(i).getId());
+            mvp.setNom(projets.get(i).getNom());
+
+            long likes = nbrLikes(projets.get(i).getId());
+            //System.out.println("nbr cmts "+likes);
+            long cmts = nbrComments(projets.get(i).getId());
+            //System.out.println("nbr likes "+cmts);
+            double moy = (likes+cmts)/2;
+            //System.out.println("moyene "+moy);
+
+            mvp.setNbrComments(cmts);
+            mvp.setNbrLikes(likes);
+            mvp.setMoyenneNbrs(moy);
+
+            mvps.add(mvp);
+        }
+
+
+        return fourMostViewProjects(mvps);
+    }
+
+    //sort and return the 4 elements
+    List<ReturnMostViewProjects> fourMostViewProjects(List<ReturnMostViewProjects> mvps){
+        List<ReturnMostViewProjects> returns = new ArrayList<>();
+
+        mvps.sort(Comparator.comparingDouble(ReturnMostViewProjects::getMoyenneNbrs));
+        Collections.reverse(mvps);
+
+        for (int i = 0; i < 4; i++) {
+            returns.add(mvps.get(i));
+        }
+
+        return returns;
+    }
+
+    // List of projects
+    public List<Projet> getAllProjects() throws IOException {
+//        ProjetClient projetClient = new ProjetClient();
+        return projetClient.findAll();
+    }
+
+    // number of comments of a project
+    public long nbrComments(int id) throws IOException {
+        CommentaireClient commentaireClient = new CommentaireClient();
+        List<Commentaire>commentaires = commentaireClient.getCommentByEntity("PROJET",id);
+
+        return commentaires.size();
+
+    }
+
+    // number of likes of a project
+    public long nbrLikes(int id) throws IOException {
+        LikeClient likeClient = new LikeClient();
+        LikeWS likeWS =likeClient.getAllLikeOrUnlikeByEntity("PROJET",id);
+        return likeWS.getLike();
 
     }
 
