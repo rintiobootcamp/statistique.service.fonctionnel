@@ -36,10 +36,16 @@ public class StatistiqueService {
     CommentaireClient commentaireClient;
     LikeClient likeClient;
     ProjetClient projetClient;
+    List<ReturnMostViewProjects> mostViewProjects;
+//    private List<Projet> projets;
+//    private List<Debat> debats;
+//    private List<LikeTable> likes;
+//    private List<Commentaire> commentaires;
 
     @PostConstruct
 
     public void init() {
+        mostViewProjects = new ArrayList<>();
         projetClient = new ProjetClient();
         debatClient = new DebatClient();
         commentaireClient = new CommentaireClient();
@@ -235,7 +241,7 @@ public class StatistiqueService {
 
         List<Projet>projets = getAllProjects();
         //System.out.println("PROJECTS "+ GsonUtils.toJSONWithoutClassName(projets));
-
+        if(mostViewProjects.isEmpty())
         for (int i = 0; i < projets.size(); i++) {
             //System.out.println("PROJET A l'indice "+GsonUtils.toJSONWithoutClassName(projets.get(i)));
             ReturnMostViewProjects mvp = new ReturnMostViewProjects();
@@ -271,6 +277,7 @@ public class StatistiqueService {
             returns.add(mvps.get(i));
         }
 
+        this.mostViewProjects  = returns;
         return returns;
     }
 
